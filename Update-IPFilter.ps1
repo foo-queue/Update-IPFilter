@@ -26,7 +26,7 @@ function script:Update-QBitTorrentPrefs {
     $json = $jsonSerializer.Serialize($preferences)
 
     Write-Verbose "Posting $json to $url"
-    $null = Invoke-WebRequest -Uri $url -Body "json=$json" -Method Post
+    $null = Invoke-WebRequest -Uri $url -Body "json=$json" -Method Post -UseBasicParsing
 }
 
 function script:Remove-OldIPFilters {
@@ -68,7 +68,7 @@ function Update-IPFilter {
         $p2pPath = Join-Path $DestinationDir 'guarding.p2p'
 
         Write-Host "Downloading $SourceUrl to '$zipPath'"
-        Invoke-WebRequest -Uri $SourceUrl -OutFile $zipPath -TimeoutSec 30
+        Invoke-WebRequest -Uri $SourceUrl -OutFile $zipPath -TimeoutSec 30 -UseBasicParsing
 
         Write-Host "Expanding '$zipPath'"
         Expand-Archive -LiteralPath $zipPath -DestinationPath $DestinationDir -Force
