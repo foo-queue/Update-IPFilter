@@ -15,18 +15,14 @@ function script:Update-QBitTorrentPrefs {
         $CurrentIPFiltersName
     )
 
-    $url = "$qBitTorrentWebClientUrl/command/setPreferences"
+    $url = "$qBitTorrentWebClientUrl/api/v2/app/setPreferences"
     $preferences = @{
         'ip_filter_enabled' = $true
         'ip_filter_path' = "$(Join-Path $DestinationDir $CurrentIPFiltersName)"
-    }
+    } | ConvertTo-Json
     
-    Add-Type -AssemblyName 'System.Web.Extensions'
-    $jsonSerializer = New-Object 'System.Web.Script.Serialization.JavaScriptSerializer'
-    $json = $jsonSerializer.Serialize($preferences)
-
-    Write-Verbose "Posting $json to $url"
-    $null = Invoke-WebRequest -Uri $url -Body "json=$json" -Method Post -UseBasicParsing
+    Write-Verbose "Posting $preferences to $url"
+    $null = Invoke-WebRequest -Uri $url -Body "json=$preferences" -Method Post -UseBasicParsing
 }
 
 function script:Remove-OldIPFilters {
