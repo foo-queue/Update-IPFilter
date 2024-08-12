@@ -5,22 +5,14 @@ A PowerShell script to download a Bittorrent IPFilter and update the running qBi
 Register the task:
 
 ```powershell
-cd ~\Dev\Update-IPFilter
+Import-Module .\Update-IPFilter
 
-New-ScheduledTask `
-    -Action (New-ScheduledTaskAction `
-        -Execute (Get-Command pwsh).Path `
-        -Argument '-noexit -nop -ep bypass -c "&{ Import-Module .\Update-IPFilter.psm1; Update-IPFilter }"' `
-        -WorkingDirectory $PWD) `
-    -Trigger (New-ScheduledTaskTrigger `
-        -Weekly `
-        -DaysOfWeek Sunday `
-        -At (Get-Date '8:00 AM')) | `
-Register-ScheduledTask -TaskName 'Update qBittorrent IPFilter' -Force
+# Local qBittorrent listening on port 8083
+Register-IPFilter -RunNow
 
-# Execute now:
-Start-ScheduledTask -TaskName 'Update qBittorrent IPFilter'
+# Secured qBittorrent with custom domain (will prompt for password)
+Register-IPFilter https://qbt.belcherjohn.com -UserName belcherjohn -RunNow
 
 # Delete:
-# Unregister-ScheduledTask -TaskName 'Update qBittorrent IPFilter'
+# Unregister-IPFilter
 ```
