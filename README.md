@@ -1,18 +1,23 @@
 # Update-IPFilter
 
-A PowerShell script to download a Bittorrent IPFilter and update the running qBitTorrent instance.
+A PowerShell script to download Bittorrent IPFilters and update a running qBittorrent instance.
 
 Register the task:
 
 ```powershell
 Import-Module .\Update-IPFilter
 
-# Local qBittorrent listening on port 8083
-Register-IPFilter -RunNow
+# Unprotected qBittorrent running in host context (not a container):
+Register-UpdateIPFilters 'http://localhost:8083' -RunNow
 
-# Secured qBittorrent with custom domain (will prompt for password)
-Register-IPFilter https://qbt.belcherjohn.com -UserName belcherjohn -RunNow
+# Secured qBittorrent running in a container with mounted volume and custom domain:
+Register-UpdateIPFilters `
+  -ServerUrl 'https://qbt.belcherjohn.com/' `
+  -UserName 'belcherjohn' `
+  -DestinationPath 'M:\Multimedia\Torrents\IPFilter\ipfilters.dat' `
+  -ServerIPFiltersPath '/data/Torrents/IPFilter/ipfilters.dat' `
+  -RunNow
 
-# Delete:
-# Unregister-IPFilter
+# Delete the scheduled task:
+Register-UpdateIPFilters
 ```
